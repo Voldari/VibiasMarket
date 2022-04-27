@@ -4,6 +4,10 @@ import Nav from "$lib/Nav.svelte";
 
 </script>
 
+<style>
+
+</style>
+
 <div class="container">
     <div class="header">
         <h1>Vibia's Market</h1>
@@ -14,7 +18,3 @@ import Nav from "$lib/Nav.svelte";
         <a href="/signup">Sign Up</a>
     </div>
 </div>
-
-<style>
-
-</style>
