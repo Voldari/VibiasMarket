@@ -1,0 +1,20 @@
+nes (16 sloc) 352 Bytes
+<script>
+  import Auth from 'supabase-ui-svelte'
+  import { supabase } from '$lib/db'
+</script>
+
+<div class="container">
+  <h1>Sign in</h1>
+
+  <Auth supabaseClient={supabase} providers={['google', 'twitter']}/>
+</div>
+
+<style>
+  .container {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    margin: 0px auto;
+  }
+</style>
