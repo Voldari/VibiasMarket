@@ -1,3 +1,0 @@
-market layout
-
-<slot></slot>

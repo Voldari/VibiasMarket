@@ -19,7 +19,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@supabase/supabase-js": "^1.35.2",
+    "@supabase/supabase-js": "^1.35.3",
     "modern-normalize": "^1.1.0",
     "supabase-ui-svelte": "^0.1.1"
   }

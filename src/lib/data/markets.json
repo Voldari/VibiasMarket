@@ -1,0 +1,24 @@
+{
+    "markets": [
+        {
+            "name": "ader",
+            "shops": [
+                "pickles",
+                "cucumber"
+            ]
+        },
+        {
+            "name": "wanju",
+            "shops": [
+                "bread",
+                "salad"
+            ]
+        },
+        {
+            "name": "petra",
+            "shops": [
+                "corn"
+            ]
+        }
+    ]
+}
