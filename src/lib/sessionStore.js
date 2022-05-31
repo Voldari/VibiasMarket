@@ -1,3 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable } from "svelte/store";
 
-export const user = writable(false);
+export const marketToggle = writable(true)
+export const marketList = writable([{'market_name': 'Fake Shop', 'id': 0}])
