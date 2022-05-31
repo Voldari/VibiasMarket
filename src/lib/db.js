@@ -61,8 +61,8 @@ export async function getShopsWithMarketID(market_id) {
     .from('Shops')
     .select('shop_name, market_id')
     .eq('market_id', market_id)
+  
   if (error) throw new Error(error.message)
-
 
 
   return data
