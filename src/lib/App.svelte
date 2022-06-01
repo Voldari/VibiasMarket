@@ -1,5 +1,11 @@
 <script context="module">
-    import { marketToggle } from './sessionStore'
+    import { newMarketToggle } from './sessionStore'
+    import { shopList, newShopToggle, currentUser } from '$lib/sessionStore'
+
+    import { getCurrentUser, getMarkets, getShops } from '$lib/db'
+
+    getMarkets()
+    getCurrentUser()
 </script>
 
 
@@ -8,20 +14,16 @@
     import NewMarket from "./NewMarket.svelte";
 
     let shop = true
-    function fss() {
-        marketToggle.set(!$marketToggle)
+    function toggleNewMarket() {
+        newMarketToggle.set(!$newMarketToggle)
     }
 </script>
 
 
-
-{#if $marketToggle}
-        <button on:click={fss}>Go to market creation</button>
-        <Market/>
-        {#if shop}
-            Shop component
-        {/if}
+{#if $newMarketToggle}
+    <button on:click={toggleNewMarket}>Go to market overview</button>
+    <NewMarket/>    
 {:else}
-        <button on:click={fss}>Go to market overview</button>
-        <NewMarket/>
+    <button on:click={toggleNewMarket}>Go to market creation</button>
+    <Market/>
 {/if}
