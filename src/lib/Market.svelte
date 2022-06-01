@@ -1,12 +1,9 @@
 <script>
-    import { getMarkets, getShopsWithMarketID } from '$lib/db'
+    import { getShopsWithMarketID } from '$lib/db'
     import Shops from '$lib/Shops.svelte';
-    import { marketList, shopList, newShopToggle, currentMarket } from '$lib/sessionStore'
-    import App from './App.svelte';
-    import Auth from './Auth.svelte';
+    import { shopList, newShopToggle, currentMarket } from '$lib/sessionStore'
+
     import NewShop from './NewShop.svelte';
-    
-    let selected_market = { market_name: "", id: 0};
 
     $: getShopsWithMarketID($currentMarket.id)
 

@@ -53,6 +53,26 @@ export async function getMarkets() {
   return data
 }
 
+/**
+ * @param {any} ownerid
+ */
+export async function getMarketsFromUser(ownerid) {
+  // QUERY SUPABASE FOR DATA
+  const { data, error } = await supabase
+    .from('Markets')
+    .select('id, market_name, ownerid')  
+    .eq('ownerid', ownerid)
+
+  // POSSIBLE ERROR THROW
+  if (error) throw new Error(error.message)
+
+  // UPDATE STORE MARKET DATA
+  marketList.set(data)
+
+  // RETURN DATA
+  return data
+}
+
 export async function getShops() {
   // QUERY SUPABASE FOR DATA
   const { data, error } = await supabase
@@ -71,7 +91,7 @@ export async function getShops() {
 
 /**
  * Gets a object of shops within a given market
- * @param {number} market_id - The id of the market to get shops from
+ * @param {string} market_id - The id of the market to get shops from
  */
 export async function getShopsWithMarketID(market_id) {
   // QUERT SUPABASE FOR DATA
@@ -116,7 +136,7 @@ export async function createNewMarket(marketName, ownerID) {
 
 /**
  * @param {string} shopName
- * @param {number} marketID
+ * @param {string} marketID
  * @param {string} ownerid
  */
 

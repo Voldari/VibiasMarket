@@ -1,15 +1,15 @@
 <script context="module">
     import { currentMarket, newMarketToggle } from './sessionStore'
-    import { shopList, newShopToggle, currentUser, marketState, marketList } from '$lib/sessionStore'
+    import { currentUser, marketState, marketList } from '$lib/sessionStore'
 
-    import { getCurrentUser, getMarkets, getShops } from '$lib/db'
-
-    getMarkets()
+    import { getCurrentUser, getMarketsFromUser, } from '$lib/db'
     getCurrentUser()
 </script>
 
 
 <script>
+    $: getMarketsFromUser($currentUser.id)
+
     import Market from "./Market.svelte";
     import NewMarket from "./NewMarket.svelte";
 
@@ -26,7 +26,7 @@
     }
 
     /**
-    * @param {{ market_name: string; id: number; ownerid: string; }} market
+    * @param {{ market_name: string; id: string; ownerid: string; }} market
     */
     function openMarket(market) {
         currentMarket.set(market)
@@ -37,7 +37,9 @@
 {#if $marketState == 'list'}
     <button on:click={() => toggleMarketChange('create')}>Go to market creation</button>
     {#each $marketList as market}
-        <button on:click={() => openMarket(market)}>{market.market_name}</button>
+        {#if market.market_name != ''}
+            <button on:click={() => openMarket(market)}>{market.market_name}</button>
+        {/if}
     {/each}
 {:else if $marketState == 'create'}
     <button on:click={() => toggleMarketChange('list')}>change market</button>

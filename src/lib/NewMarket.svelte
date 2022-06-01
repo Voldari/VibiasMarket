@@ -1,6 +1,6 @@
 <script>
     import { createNewMarket } from '$lib/db'
-    import { newMarketToggle, currentUser, marketState, currentMarket } from '$lib/sessionStore'
+    import { newMarketToggle, currentUser, marketState, } from '$lib/sessionStore'
 
     let newMarketName = ""
 
