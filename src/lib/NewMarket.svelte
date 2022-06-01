@@ -1,6 +1,6 @@
 <script>
     import { createNewMarket } from '$lib/db'
-    import { newMarketToggle, currentUser } from '$lib/sessionStore'
+    import { newMarketToggle, currentUser, marketState, currentMarket } from '$lib/sessionStore'
 
     let newMarketName = ""
 
@@ -9,6 +9,7 @@
     async function createMarketandToggle() {
         createNewMarket(newMarketName, $currentUser.id)
         newMarketToggle.set(!$newMarketToggle)
+        marketState.set('home')
     }
 </script>
 

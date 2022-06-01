@@ -1,6 +1,6 @@
 <script context="module">
-    import { newMarketToggle } from './sessionStore'
-    import { shopList, newShopToggle, currentUser } from '$lib/sessionStore'
+    import { currentMarket, newMarketToggle } from './sessionStore'
+    import { shopList, newShopToggle, currentUser, marketState, marketList } from '$lib/sessionStore'
 
     import { getCurrentUser, getMarkets, getShops } from '$lib/db'
 
@@ -17,13 +17,32 @@
     function toggleNewMarket() {
         newMarketToggle.set(!$newMarketToggle)
     }
+
+    /**
+    * @param {string} state
+    */
+    function toggleMarketChange(state) {
+        marketState.set(state)
+    }
+
+    /**
+    * @param {{ market_name: string; id: number; ownerid: string; }} market
+    */
+    function openMarket(market) {
+        currentMarket.set(market)
+        toggleMarketChange('home')
+    }
 </script>
 
-
-{#if $newMarketToggle}
-    <button on:click={toggleNewMarket}>Go to market overview</button>
-    <NewMarket/>    
+{#if $marketState == 'list'}
+    <button on:click={() => toggleMarketChange('create')}>Go to market creation</button>
+    {#each $marketList as market}
+        <button on:click={() => openMarket(market)}>{market.market_name}</button>
+    {/each}
+{:else if $marketState == 'create'}
+    <button on:click={() => toggleMarketChange('list')}>change market</button>
+    <NewMarket/>
 {:else}
-    <button on:click={toggleNewMarket}>Go to market creation</button>
+    <button on:click={() => toggleMarketChange('list')}>change market</button>
     <Market/>
 {/if}

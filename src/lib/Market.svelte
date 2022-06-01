@@ -16,18 +16,8 @@
 
 </script>
 
-{$currentMarket.ownerid}
-
-<!-- Select market from listed options -->
-<select name="market" id="market" bind:value={$currentMarket}>
-    {#each $marketList as market}
-        <option value={market}>{market.market_name}</option>
-    {/each}
-</select>
 
 <h1>{$currentMarket.market_name}</h1>
-
-
 
 {#if $newShopToggle}
     <button on:click={toggleNewShop}>View shops</button>

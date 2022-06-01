@@ -2,7 +2,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { readable } from 'svelte/store'
 
-import { marketList, shopList, currentUser } from '$lib/sessionStore'
+import { marketList, shopList, currentUser, currentMarket } from '$lib/sessionStore'
 
 export const supabase = createClient(
     import.meta.env.VITE_SUPABASE_URL,
@@ -108,6 +108,7 @@ export async function createNewMarket(marketName, ownerID) {
   if (error) throw new Error(error.message)
   // UPDATE STORE LIST
   getMarkets()
+  currentMarket.set(data[0])
 
   // RETURN DAATA
   return data
