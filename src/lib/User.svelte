@@ -1,5 +1,5 @@
 <script>
-    import { user, auth } from '$lib/db'
+    import { user, auth } from '$lib/control/db'
 </script>
 
 <div class="container">

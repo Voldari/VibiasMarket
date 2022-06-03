@@ -4,7 +4,7 @@
   import User from '$lib/User.svelte'
   import App from '$lib/App.svelte';
 
-  import { user } from '$lib/db';
+  import { user } from '$lib/control/db';
 </script>
 
 {#if $user}
