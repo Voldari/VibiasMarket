@@ -1,6 +1,5 @@
 <script>
-    import { getShopsWithMarketID } from '$lib/control/db'
-    import { currentMarket, shopState } from '$lib/control/sessionStore'
+    import { shopState } from '$lib/control/sessionStore'
 
     import ShopList from '$lib/Shop/ShopList.svelte';
     import ShopNew from '$lib/Shop/ShopNew.svelte';

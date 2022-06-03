@@ -1,29 +1,12 @@
-
 import { createClient } from '@supabase/supabase-js'
 import { readable } from 'svelte/store'
 
-import { marketList, shopList, currentUser, currentMarket, currentShop } from '$lib/control/sessionStore'
+import { marketList, shopList, currentUser, currentMarket, currentShop, itemList, currentItem } from '$lib/control/sessionStore'
 
 export const supabase = createClient(
     import.meta.env.VITE_SUPABASE_URL,
     import.meta.env.VITE_SUPABASE_ANON_KEY
 )
-
-/**
- * @param {string} table
- */
-async function getAll(table) {
-  // QUERY SUPABASE FOR DATA
-  const { data, error } = await supabase
-    .from(table)
-    .select()  
-
-  // POSSIBLE ERROR THROW
-  if (error) throw new Error(error.message)
-
-  // RETURN DATA
-  return data
-}
 
 export let user = readable(supabase.auth.user(), set => {
   supabase.auth.onAuthStateChange((event, session) => {
@@ -36,6 +19,71 @@ export let user = readable(supabase.auth.user(), set => {
   })
 })
 export const auth = supabase.auth
+
+/**
+ * @param {string} table
+ */
+ async function getAll(table) {
+  const { data, error } = await supabase
+    .from(table)
+    .select()  
+
+  if (error) throw new Error(error.message)
+  
+  return data
+}
+export async function getMarkets() {
+  let data = await getAll('Markets')
+  marketList.set(data)
+  return data
+}
+export async function getShops() {
+  let data = await getAll('Shops')
+  shopList.set(data)
+  return data
+}
+
+ /**
+ * @param {string} table
+ * @param {string} col
+ * @param {any} eq
+ */
+ async function getEq(table, col, eq) {
+  const { data, error } = await supabase
+    .from(table)
+    .select()
+    .eq( col, eq)  
+
+  if (error) throw new Error(error.message)
+  
+  return data
+}
+/**
+ * @param {any} ownerid
+ */
+export async function getMarketsFromUser(ownerid) {
+  let data = await getEq('Markets', 'ownerid', ownerid)
+  marketList.set(data)
+  return data
+}
+/**
+ * Gets a object of shops within a given market
+ * @param {number} market_id - The id of the market to get shops from
+ */
+export async function getShopsWithMarketID(market_id) {
+  let data = await getEq('Shops', 'market_id', market_id)
+  shopList.set(data)
+  return data
+}
+/**
+ * Gets a object of shops within a given market
+ * @param {number} shop_id - The id of the market to get shops from
+ */
+export async function getItemsWithShopID(shop_id) {
+  let data = await getEq('Items', 'shop_id', shop_id)
+  itemList.set(data)
+  return data
+}
 
 
 export async function getCurrentUser() {
@@ -53,41 +101,7 @@ export async function getCurrentUser() {
   return data[0]
 }
 
-export async function getMarkets() {
-  // QUERY SUPABASE FOR DATA
-  const { data, error } = await supabase
-    .from('Markets')
-    .select('id, market_name, ownerid')  
 
-  // POSSIBLE ERROR THROW
-  if (error) throw new Error(error.message)
-
-  // UPDATE STORE MARKET DATA
-  marketList.set(data)
-
-  // RETURN DATA
-  return data
-}
-
-/**
- * @param {any} ownerid
- */
-export async function getMarketsFromUser(ownerid) {
-  // QUERY SUPABASE FOR DATA
-  const { data, error } = await supabase
-    .from('Markets')
-    .select('id, market_name, ownerid')  
-    .eq('ownerid', ownerid)
-
-  // POSSIBLE ERROR THROW
-  if (error) throw new Error(error.message)
-
-  // UPDATE STORE MARKET DATA
-  marketList.set(data)
-
-  // RETURN DATA
-  return data
-}
 
 /**
  * @param {number} id
@@ -103,48 +117,11 @@ export async function deleteMarket(id) {
   return data
 }
 
-export async function getShops() {
-  // QUERY SUPABASE FOR DATA
-  const { data, error } = await supabase
-    .from('Shops')
-    .select('shop_name, market_id')  
-
-  // POSSIBLE ERROR THROW
-  if (error) throw new Error(error.message)
-
-  // UPDATE STORE MARKET DATA
-  shopList.set(data)
-
-  // RETURN DATA
-  return data
-}
-
-/**
- * Gets a object of shops within a given market
- * @param {number} market_id - The id of the market to get shops from
- */
-export async function getShopsWithMarketID(market_id) {
-  // QUERT SUPABASE FOR DATA
-  const { data, error } = await supabase
-    .from('Shops')
-    .select()
-    .eq('market_id', market_id)
-
-  // POSSIBLE ERROR THROW
-  if (error) throw new Error(error.message)
-
-  // UPDATE STORE SHOPLIST
-  shopList.set(data)
-
-  // RETURN DATA
-  return data
-}
-
 
  /**
  * @param {number} id
  */
- export async function deleteShop(id) {
+export async function deleteShop(id) {
   const { data, error } = await supabase
     .from('Shops')
     .delete()
@@ -158,18 +135,30 @@ export async function getShopsWithMarketID(market_id) {
  /**
  * @param {number} market_id
  */
-  export async function deleteShopWithMarketID(market_id) {
-    const { data, error } = await supabase
-      .from('Shops')
-      .delete()
-      .eq('market_id', market_id)
-  
-    if (error) throw new Error(error.message)
-  
-    return data
-  }
+export async function deleteShopWithMarketID(market_id) {
+  const { data, error } = await supabase
+    .from('Shops')
+    .delete()
+    .eq('market_id', market_id)
 
+  if (error) throw new Error(error.message)
 
+  return data
+}
+
+ /**
+ * @param {number} id
+ */
+export async function deleteItem(id) {
+  const { data, error } = await supabase
+    .from('Items')
+    .delete()
+    .eq('id', id)
+
+  if (error) throw new Error(error.message)
+
+  return data
+}
 
 /**
  * @param {string} marketName
@@ -193,8 +182,6 @@ export async function createNewMarket(marketName, ownerID) {
   // RETURN DAATA
   return data
 }
-
-
 
 /**
  * @param {string} shopName
@@ -222,7 +209,31 @@ export async function createNewShop (shopName, marketID, ownerid) {
   return data
 }
 
+/**
+ * @param {string} itemName
+ * @param {number} shopID
+ * @param {number} marketID
+ * @param {string} ownerid
+ */
+export async function createNewItem (itemName, shopID, marketID, ownerid) {
+  // DEFINE DATA
+  let newItem = {
+    item_name: itemName,
+    shop_id: shopID,
+    market_id: marketID,
+    ownerid: ownerid,
+    item_cost: 100
+  }
+  // INSERT DATA TO SUPABASE
 
-// user sign in with magic link
+  const { data, error } = await supabase
+    .from('Items')
+    .insert ( newItem )
+  // POSSIBLE ERROR THROW
+  if (error) throw new Error(error.message)
+  // UPDATE STORE LIST
+  currentItem.set(data[0])
 
-
+  // RETURN DATA
+  return data
+}
