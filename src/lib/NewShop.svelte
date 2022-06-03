@@ -12,5 +12,7 @@
     }
 </script>
 
+<h2>Shop creation</h2>
+
 <button on:click={createShopandToggle}>Create new Shop</button>
 <input type="text" bind:value={newShopName}>

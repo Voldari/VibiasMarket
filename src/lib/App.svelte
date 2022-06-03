@@ -1,22 +1,10 @@
-<script context="module">
-    import { currentMarket, newMarketToggle } from './sessionStore'
-    import { currentUser, marketState, marketList } from '$lib/sessionStore'
-
-    import { getCurrentUser, getMarketsFromUser, } from '$lib/db'
-    getCurrentUser()
-</script>
-
-
 <script>
-    $: getMarketsFromUser($currentUser.id)
+    import { currentUser, currentMarket, marketState, marketList } from '$lib/sessionStore'
+    import { getCurrentUser, getMarketsFromUser, } from '$lib/db'
 
     import Market from "./Market.svelte";
     import NewMarket from "./NewMarket.svelte";
 
-    let shop = true
-    function toggleNewMarket() {
-        newMarketToggle.set(!$newMarketToggle)
-    }
 
     /**
     * @param {string} state
@@ -24,7 +12,6 @@
     function toggleMarketChange(state) {
         marketState.set(state)
     }
-
     /**
     * @param {{ market_name: string; id: string; ownerid: string; }} market
     */
@@ -34,17 +21,27 @@
     }
 </script>
 
-{#if $marketState == 'list'}
-    <button on:click={() => toggleMarketChange('create')}>Go to market creation</button>
-    {#each $marketList as market}
-        {#if market.market_name != ''}
-            <button on:click={() => openMarket(market)}>{market.market_name}</button>
+{#await getCurrentUser()}
+    awaiting User data
+{:then}
+    {#await getMarketsFromUser($currentUser.id)}
+        awaiting market data
+    {:then}
+        {#if $marketState == 'list'}
+            <button on:click={() => toggleMarketChange('create')}>Go to market creation</button>
+            <h2>Your markets</h2>
+            {#each $marketList as market}
+                {#if market.market_name != ''}
+                    <button on:click={() => openMarket(market)}>{market.market_name}</button>
+                {/if}
+            {/each}
+        {:else if $marketState == 'create'}
+            <button on:click={() => toggleMarketChange('list')}>change market</button>
+            <NewMarket/>
+        {:else}
+            <button on:click={() => toggleMarketChange('list')}>change market</button>
+            <Market/>
         {/if}
-    {/each}
-{:else if $marketState == 'create'}
-    <button on:click={() => toggleMarketChange('list')}>change market</button>
-    <NewMarket/>
-{:else}
-    <button on:click={() => toggleMarketChange('list')}>change market</button>
-    <Market/>
-{/if}
+    {/await}
+{/await}
+

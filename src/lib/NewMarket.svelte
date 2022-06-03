@@ -14,6 +14,6 @@
 </script>
 
 
-
+<h2>Market creation</h2>
 <button on:click={createMarketandToggle}>Create new market</button>
 <input type="text" bind:value={newMarketName}>
