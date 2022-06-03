@@ -20,71 +20,6 @@ export let user = readable(supabase.auth.user(), set => {
 })
 export const auth = supabase.auth
 
-/**
- * @param {string} table
- */
- async function getAll(table) {
-  const { data, error } = await supabase
-    .from(table)
-    .select()  
-
-  if (error) throw new Error(error.message)
-  
-  return data
-}
-export async function getMarkets() {
-  let data = await getAll('Markets')
-  marketList.set(data)
-  return data
-}
-export async function getShops() {
-  let data = await getAll('Shops')
-  shopList.set(data)
-  return data
-}
-
- /**
- * @param {string} table
- * @param {string} col
- * @param {any} eq
- */
- async function getEq(table, col, eq) {
-  const { data, error } = await supabase
-    .from(table)
-    .select()
-    .eq( col, eq)  
-
-  if (error) throw new Error(error.message)
-  
-  return data
-}
-/**
- * @param {any} ownerid
- */
-export async function getMarketsFromUser(ownerid) {
-  let data = await getEq('Markets', 'ownerid', ownerid)
-  marketList.set(data)
-  return data
-}
-/**
- * Gets a object of shops within a given market
- * @param {number} market_id - The id of the market to get shops from
- */
-export async function getShopsWithMarketID(market_id) {
-  let data = await getEq('Shops', 'market_id', market_id)
-  shopList.set(data)
-  return data
-}
-/**
- * Gets a object of shops within a given market
- * @param {number} shop_id - The id of the market to get shops from
- */
-export async function getItemsWithShopID(shop_id) {
-  let data = await getEq('Items', 'shop_id', shop_id)
-  itemList.set(data)
-  return data
-}
-
 
 export async function getCurrentUser() {
   const { data, error } = await supabase
@@ -102,47 +37,107 @@ export async function getCurrentUser() {
 }
 
 
+/**
+ * @param {string} table
+ */
+ async function getAll(table) {
+  const { data, error } = await supabase
+    .from(table)
+    .select()  
+
+  if (error) throw new Error(error.message)
+  
+  return data
+}
+
+export async function getMarkets() {
+  let data = await getAll('Markets')
+  marketList.set(data)
+  return data
+}
+
+export async function getShops() {
+  let data = await getAll('Shops')
+  shopList.set(data)
+  return data
+}
+
+
+ /**
+ * @param {string} table
+ * @param {string} col
+ * @param {any} eq
+ */
+ async function getEq(table, col, eq) {
+  const { data, error } = await supabase
+    .from(table)
+    .select()
+    .eq( col, eq)  
+
+  if (error) throw new Error(error.message)
+  
+  return data
+}
+
+/**
+ * @param {any} ownerid
+ */
+export async function getMarketsFromUser(ownerid) {
+  let data = await getEq('Markets', 'ownerid', ownerid)
+  marketList.set(data)
+  return data
+}
+
+/**
+ * Gets a object of shops within a given market
+ * @param {number} market_id - The id of the market to get shops from
+ */
+export async function getShopsWithMarketID(market_id) {
+  let data = await getEq('Shops', 'market_id', market_id)
+  shopList.set(data)
+  return data
+}
+
+/**
+ * Gets a object of shops within a given market
+ * @param {number} shop_id - The id of the market to get shops from
+ */
+export async function getItemsWithShopID(shop_id) {
+  let data = await getEq('Items', 'shop_id', shop_id)
+  itemList.set(data)
+  return data
+}
+
+/**
+ * @param {string} table
+ * @param {string | number | symbol} col
+ * @param {any} eq
+ */
+async function deleteEq(table, col, eq) {
+  const { data, error } = await supabase
+    .from(table)
+    .delete()
+    .eq(col, eq)
+
+  if (error) throw new Error(error.message)
+
+  return data
+}
 
 /**
  * @param {number} id
  */
 export async function deleteMarket(id) {
-  const { data, error } = await supabase
-    .from('Markets')
-    .delete()
-    .eq('id', id)
-
-  if (error) throw new Error(error.message)
-
+  let data = await deleteEq('Markets', 'id', id)
   return data
 }
-
 
  /**
  * @param {number} id
  */
 export async function deleteShop(id) {
-  const { data, error } = await supabase
-    .from('Shops')
-    .delete()
-    .eq('id', id)
 
-  if (error) throw new Error(error.message)
-
-  return data
-}
-
- /**
- * @param {number} market_id
- */
-export async function deleteShopWithMarketID(market_id) {
-  const { data, error } = await supabase
-    .from('Shops')
-    .delete()
-    .eq('market_id', market_id)
-
-  if (error) throw new Error(error.message)
-
+  let data = await deleteEq('Shops', 'id', id)
   return data
 }
 
@@ -150,15 +145,18 @@ export async function deleteShopWithMarketID(market_id) {
  * @param {number} id
  */
 export async function deleteItem(id) {
-  const { data, error } = await supabase
-    .from('Items')
-    .delete()
-    .eq('id', id)
-
-  if (error) throw new Error(error.message)
-
+  let data = await deleteEq('Items', 'id', id)
   return data
 }
+
+ /**
+ * @param {number} market_id
+ */
+export async function deleteShopWithMarketID(market_id) {
+  let data = await deleteEq('Shops', 'market_id', market_id)
+  return data
+}
+
 
 /**
  * @param {string} marketName
