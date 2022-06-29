@@ -14,5 +14,6 @@
         width: 500px;
         height: 100px;
         background-color: lightgray;
+        grid-area: header;
     }
 </style>

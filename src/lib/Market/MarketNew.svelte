@@ -5,12 +5,16 @@
     let newMarketName = ""
 
     async function createMarketandToggle() {
-        await createNewMarket(newMarketName, $currentUser.id)
+        await createNewMarket(newMarketName, $currentUser.int_id)
         marketState.set('home')
     }
 </script>
 
-<button on:click={() => marketState.set('list')}>change market</button>
 <h2>Market creation</h2>
+
 <button on:click={createMarketandToggle}>Create new market</button>
 <input type="text" bind:value={newMarketName}>
+
+<style>
+
+</style>

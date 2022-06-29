@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { readable } from 'svelte/store'
 
-import { marketList, shopList, currentUser, currentMarket, currentShop, itemList, currentItem } from '$lib/control/sessionStore'
+import { shopList, currentUser, currentMarket, currentShop, itemList, currentItem, marketPatonList, marketOwnerList } from '$lib/control/sessionStore'
 
 export const supabase = createClient(
     import.meta.env.VITE_SUPABASE_URL,
@@ -24,7 +24,7 @@ export const auth = supabase.auth
 export async function getCurrentUser() {
   const { data, error } = await supabase
     .from('profile')
-    .select('id, display_name')
+    .select()
 
   // POSSIBLE ERROR THROW
   if (error) throw new Error(error.message)
@@ -50,18 +50,6 @@ export async function getCurrentUser() {
   return data
 }
 
-export async function getMarkets() {
-  let data = await getAll('Markets')
-  marketList.set(data)
-  return data
-}
-
-export async function getShops() {
-  let data = await getAll('Shops')
-  shopList.set(data)
-  return data
-}
-
 
  /**
  * @param {string} table
@@ -79,14 +67,6 @@ export async function getShops() {
   return data
 }
 
-/**
- * @param {any} ownerid
- */
-export async function getMarketsFromUser(ownerid) {
-  let data = await getEq('Markets', 'ownerid', ownerid)
-  marketList.set(data)
-  return data
-}
 
 /**
  * Gets a object of shops within a given market
@@ -160,13 +140,13 @@ export async function deleteShopWithMarketID(market_id) {
 
 /**
  * @param {string} marketName
- * @param {string} ownerID
+ * @param {number} ownerID
  */
 export async function createNewMarket(marketName, ownerID) {
   // DEFINE DATA
   let newMarket = {
     market_name: marketName,
-    ownerid: ownerID
+    owner_id: ownerID
   }
   // INSERT DATA TO SUPABASE
   const { data, error } = await supabase
@@ -213,7 +193,7 @@ export async function createNewShop (shopName, marketID, ownerid) {
  * @param {number} marketID
  * @param {string} ownerid
  */
-export async function createNewItem (itemName, shopID, marketID, ownerid) {
+export async function createNewItem (itemName, shopID, marketID, ownerid ) {
   // DEFINE DATA
   let newItem = {
     item_name: itemName,
@@ -233,5 +213,37 @@ export async function createNewItem (itemName, shopID, marketID, ownerid) {
   currentItem.set(data[0])
 
   // RETURN DATA
+  return data
+}
+
+/**
+ * @param {number} patronID
+ */
+export async function getMarketsWithPatronID(patronID) {
+  const { data, error } = await supabase
+    .from('Markets')
+    .select()
+    .contains( 'patron_ids', [patronID])  
+
+  if (error) throw new Error(error.message)
+  
+  marketPatonList.set(data)
+
+  return data
+}
+
+/**
+ * @param {number} ownerID
+ */
+ export async function getMarketsWithOwnerID(ownerID) {
+  const { data, error } = await supabase
+    .from('Markets')
+    .select()
+    .eq('owner_id', ownerID)  
+
+  if (error) throw new Error(error.message)
+  
+  marketOwnerList.set(data)
+
   return data
 }
